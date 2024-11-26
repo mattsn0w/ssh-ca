@@ -18,7 +18,20 @@ gen_new_CA.sh to create the keypair.
 # Server setup
 Copy sshd_config.d.ca.conf to /etc/ssh/sshd_config.d/ca.conf or append to your sshd_config.
 Copy the public key `yubikey-ca.pub` to `/etc/ssh/ca.pub` on the target server.
+```
+# Verify the sshd_config file/configuration is valid
+sshd -T | grep trustedusercakeys
+SSHD_LINT_RETURN=$?
+
+# if previous commands show `trustedusercakeys /etc/ssh/ca.pub` and 0 , then restart sshd. 
+if [ $SSHD_LINT_RETURN -eq 0 ];then 
+  systemctl restart sshd
+fi
+```
 
 
 # Sign a client SSH public key
+Run `./sign.sh users/joe.pub joe` to generate a certificate. This will create file `users/joe-cert.pub`.
+Make sure to share the contents of that certificate with Joe. 
+
 
